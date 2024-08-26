@@ -7,23 +7,40 @@ enum my_keycodes {
 uint16_t key_timer;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  	switch (keycode) {
+	switch (keycode) {
 		// left shift when held, alt + backspace when tapped
 		// this emulates mod-tap functionality because mod-tap does not support modifiers combined with keycodes
-    	case MT_ALT_BSPC:
-      		if (record->event.pressed) {
+    		case MT_ALT_BSPC:
+      			if (record->event.pressed) {
 				key_timer = timer_read();
 				register_mods(MOD_BIT(KC_LSFT));
-      		} else {
+      			} else {
 				unregister_mods(MOD_BIT(KC_LSFT));
 				if (timer_elapsed(key_timer) < TAPPING_TERM) {
-          			tap_code16(LALT(KC_BSPC));
-        		}
-	  		}
-      		return false;
-		default:
+          				tap_code16(LALT(KC_BSPC));
+        			}
+			}
+      			return false;
+
+		// left shift when held, left curly brace when tapped
+		// this emulates mod-tap functionality because mod-tap does not support modifiers combined with keycodes
+		case LSFT_T(KC_LCBR):
+			if (record->tap.count && record->event.pressed) {
+				tap_code16(KC_LCBR);
+				return false;
+			}
+			return true;
+
+		// right shift when held, right curly brace when tapped
+		// this emulates mod-tap functionality because mod-tap does not support modifiers combined with keycodes
+		case RSFT_T(KC_RCBR):
+			if (record->tap.count && record->event.pressed) {
+				tap_code16(KC_RCBR);
+				return false;
+			}
 			return true;
 	}
+	return true;
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -31,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		QK_GESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_DEL,
 		KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_BSLS,
 		LCTL_T(KC_MINS), KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_ENT,
-		LSFT_T(KC_LBRC), SC_LSPO, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, SC_RSPC, RSFT_T(KC_RBRC),
+		LSFT_T(KC_LCBR), SC_LSPO, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, SC_RSPC, RSFT_T(KC_RCBR),
 		KC_LCTL, KC_LALT, KC_LGUI, LT(1,KC_SPC), LT(2,KC_ENT), LSFT_T(KC_BSPC), LT(3,KC_DEL), KC_MUTE, KC_NO, KC_VOLD, KC_VOLU
 	),
 	[1] = LAYOUT(
