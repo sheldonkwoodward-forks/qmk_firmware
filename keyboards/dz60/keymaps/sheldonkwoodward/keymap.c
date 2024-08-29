@@ -2,6 +2,7 @@
 
 enum my_keycodes {
     MT_ALT_BSPC = SAFE_RANGE,
+    SW_4_SPC,
 };
 
 uint16_t key_timer;
@@ -39,6 +40,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				return false;
 			}
 			return true;
+
+		// four spaces when pressed
+		case SW_4_SPC:
+			if (record->event.pressed) {
+				SEND_STRING("    ");
+			}
+			return true;
 	}
 	return true;
 }
@@ -57,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	// arrow keys layer
 	[1] = LAYOUT(
 		KC_GRV, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_NO, LALT(KC_DEL),
-		KC_TRNS, KC_NO, KC_NO, KC_PGUP, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, LALT(KC_BSPC),
+		SW_4_SPC, KC_NO, KC_NO, KC_PGUP, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, LALT(KC_BSPC),
 		KC_CAPS, LGUI(KC_LEFT), LALT(KC_LEFT), KC_PGDN, LALT(KC_RGHT), LGUI(KC_RIGHT), KC_NO, KC_LEFT, KC_DOWN, KC_RGHT, KC_NO, KC_NO, KC_TRNS,
 		KC_LSFT, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_RSFT, KC_RSFT,
 		KC_LCTL, KC_LALT, KC_LGUI, KC_TRNS, LT(3,KC_ENT), MT_ALT_BSPC, LALT(KC_DEL), KC_MPLY, KC_NO, KC_MRWD, KC_MFFD
